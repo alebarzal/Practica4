@@ -161,13 +161,7 @@ Este repositorio implementa una API REST para la gestión de una biblioteca, usu
 
 ## Notas Adicionales
 
-### Prefijo de la URL
-
-Todos los endpoints se encuentran bajo el prefijo **practicaCuatro**, el cual se configura en el archivo principal de URLs.
-
-### CSRF
-
-- Durante el desarrollo, se recomienda utilizar el decorador `@csrf_exempt` en las vistas que modifican datos (especialmente para DELETE) o incluir el token CSRF en las peticiones desde Postman.
+- Esto es una práctica de asignatura para la Universidad.
 
 ### Uso de Postman
 

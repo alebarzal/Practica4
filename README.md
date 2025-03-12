@@ -163,8 +163,6 @@ Este repositorio implementa una API REST para la gestión de una biblioteca, usu
 
 - Esto es una práctica de asignatura para la Universidad.
 
-### Uso de Postman
 
-- Configura el header `Content-Type: application/json` para las peticiones **POST, PUT y DELETE**.
-- Asegúrate de que la URL termine en una barra (`/`) para evitar problemas con redirecciones automáticas.
+
 

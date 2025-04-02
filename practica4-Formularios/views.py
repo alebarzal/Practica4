@@ -30,97 +30,49 @@ def detalle_biblioteca(request, biblioteca_id):
 
 # Libros
 
+def nuevo_libro(request):
+    if request.method == 'POST':
+        form = LibroForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Libro creado correctamente.")
+            return redirect('lista_libros')
+        else:
+            messages.error(request, "Error al crear el libro.")
+    else:
+        form = LibroForm()
+    return render(request, 'libro_form.html', {'form': form, 'titulo': 'Nuevo Libro'})
 
 def lista_libros(request):
-    if request.method == 'GET':
-        # Permite filtrar por biblioteca con el parámetro ?biblioteca=ID
-        biblioteca_id = request.GET.get('biblioteca')
-        if biblioteca_id:
-            libros = list(Libro.objects.filter(biblioteca_id=biblioteca_id).values('id', 'titulo', 'autor', 'biblioteca_id'))
-        else:
-            libros = list(Libro.objects.values('id', 'titulo', 'autor', 'biblioteca_id'))
-        return JsonResponse(libros, safe=False)
-    else:
-        return JsonResponse({"error": "Método no permitido"}, status=405)
+    libros = Libro.objects.all()
+    return render(request, 'libros.html', {'libros': libros})
 
 def detalle_libro(request, libro_id):
-    if request.method == 'GET':
-        try:
-            libro = Libro.objects.values('id', 'titulo', 'autor', 'biblioteca_id').get(id=libro_id)
-            return JsonResponse(libro)
-        except Libro.DoesNotExist:
-            return JsonResponse({"error": "Libro no encontrado"}, status=404)
-    else:
-        return JsonResponse({"error": "Método no permitido"}, status=405)
+    libro = get_object_or_404(Libro, id=libro_id)
+    return render(request, 'libro_detalle.html', {'libro': libro})
 
-@csrf_exempt
-def registrar_libro(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        try:
-            titulo = data['titulo']
-            autor = data.get('autor', '')
-            biblioteca_id = data['biblioteca_id']
-        except KeyError:
-            return JsonResponse({'error': 'Datos incompletos'}, status=400)
-        try:
-            biblioteca = Biblioteca.objects.get(id=biblioteca_id)
-        except Biblioteca.DoesNotExist:
-            return JsonResponse({'error': 'Biblioteca no encontrada'}, status=404)
-        libro = Libro.objects.create(
-            titulo=titulo,
-            autor=autor,
-            biblioteca=biblioteca
-        )
-        return JsonResponse({
-            'id': libro.id,
-            'titulo': libro.titulo,
-            'autor': libro.autor,
-            'biblioteca_id': libro.biblioteca.id
-        }, status=201)
-    else:
-        return JsonResponse({'error': 'Método no permitido'}, status=405)
-
-@csrf_exempt
 def actualizar_libro(request, libro_id):
-    if request.method in ['PUT', 'PATCH']:
-        data = json.loads(request.body)
-        try:
-            libro = Libro.objects.get(id=libro_id)
-        except Libro.DoesNotExist:
-            return JsonResponse({'error': 'Libro no encontrado'}, status=404)
-        # Actualizar campos si se proporcionan
-        if 'titulo' in data:
-            libro.titulo = data['titulo']
-        if 'autor' in data:
-            libro.autor = data['autor']
-        if 'biblioteca_id' in data:
-            try:
-                biblioteca = Biblioteca.objects.get(id=data['biblioteca_id'])
-                libro.biblioteca = biblioteca
-            except Biblioteca.DoesNotExist:
-                return JsonResponse({'error': 'Biblioteca no encontrada'}, status=404)
-        libro.save()
-        return JsonResponse({
-            'id': libro.id,
-            'titulo': libro.titulo,
-            'autor': libro.autor,
-            'biblioteca_id': libro.biblioteca.id
-        })
+    libro = get_object_or_404(Libro, id=libro_id)
+    if request.method == 'POST':
+        form = LibroForm(request.POST, instance=libro)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Libro actualizado correctamente.")
+            return redirect('detalle_libro', libro_id=libro.id)
+        else:
+            messages.error(request, "Error al actualizar el libro.")
     else:
-        return JsonResponse({'error': 'Método no permitido'}, status=405)
+        form = LibroForm(instance=libro)
+    return render(request, 'libro_form.html', {'form': form, 'titulo': 'Actualizar Libro'})
 
-@csrf_exempt
 def eliminar_libro(request, libro_id):
-    if request.method == 'DELETE':
-        try:
-            libro = Libro.objects.get(id=libro_id)
-            libro.delete()
-            return JsonResponse({'mensaje': 'Libro eliminado exitosamente'})
-        except Libro.DoesNotExist:
-            return JsonResponse({'error': 'Libro no encontrado'}, status=404)
-    else:
-        return JsonResponse({'error': 'Método no permitido'}, status=405)
+    libro = get_object_or_404(Libro, id=libro_id)
+    if request.method == 'POST':  # Para evitar eliminar con GET
+        libro.delete()
+        messages.success(request, "Libro eliminado correctamente.")
+        return redirect('lista_libros')
+    return render(request, 'libro_confirmar_eliminar.html', {'libro': libro})
+
 
 
 #  Usuarios

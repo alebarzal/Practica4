@@ -77,44 +77,28 @@ def eliminar_libro(request, libro_id):
 
 #  Usuarios
 
+def nuevo_usuario(request):
+    if request.method == 'POST':
+        form = UsuarioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Usuario registrado correctamente.")
+            return redirect('lista_usuarios')
+        else:
+            messages.error(request, "Error al registrar el usuario.")
+    else:
+        form = UsuarioForm()
+    return render(request, 'usuario_form.html', {'form': form, 'titulo': 'Nuevo Usuario'})
 
 def lista_usuarios(request):
-    if request.method == 'GET':
-        usuarios = list(Usuario.objects.values('id', 'nombre', 'email'))
-        return JsonResponse(usuarios, safe=False)
-    else:
-        return JsonResponse({"error": "Método no permitido"}, status=405)
+    usuarios = Usuario.objects.all()
+    return render(request, 'usuarios.html', {'usuarios': usuarios})
 
 def detalle_usuario(request, usuario_id):
-    if request.method == 'GET':
-        try:
-            usuario = Usuario.objects.values('id', 'nombre', 'email').get(id=usuario_id)
-            return JsonResponse(usuario)
-        except Usuario.DoesNotExist:
-            return JsonResponse({'error': 'Usuario no encontrado'}, status=404)
-    else:
-        return JsonResponse({'error': 'Método no permitido'}, status=405)
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+    prestamos = Prestamo.objects.filter(usuario=usuario)
+    return render(request, 'usuario_detalle.html', {'usuario': usuario, 'prestamos': prestamos})
 
-@csrf_exempt
-def registrar_usuario(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        try:
-            nombre = data['nombre']
-            email = data['email']
-        except KeyError:
-            return JsonResponse({'error': 'Datos incompletos'}, status=400)
-        usuario = Usuario.objects.create(
-            nombre=nombre,
-            email=email
-        )
-        return JsonResponse({
-            'id': usuario.id,
-            'nombre': usuario.nombre,
-            'email': usuario.email
-        }, status=201)
-    else:
-        return JsonResponse({'error': 'Método no permitido'}, status=405)
 
 
 # Gestión de Préstamos

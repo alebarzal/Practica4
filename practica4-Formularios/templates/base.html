@@ -1,0 +1,36 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Practica4{% endblock %}</title>
+    <!-- Puedes incluir Bootstrap o CSS personalizado aquí -->
+</head>
+<body>
+<header>
+    <h1>Gestión de la Biblioteca</h1>
+    <nav>
+        <a href="{% url 'lista_bibliotecas' %}">Bibliotecas</a> |
+        <a href="{% url 'lista_libros' %}">Libros</a> |
+        <a href="{% url 'lista_usuarios' %}">Usuarios</a> |
+        <a href="{% url 'lista_prestamos' %}">Préstamos</a>
+    </nav>
+    <hr>
+</header>
+<section>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+</section>
+<footer>
+    <hr>
+    <p>&copy; 2025 Practica4</p>
+</footer>
+</body>
+</html>

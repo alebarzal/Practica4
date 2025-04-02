@@ -1,0 +1,16 @@
+<!-- templates/bibliotecas.html -->
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Listado de Bibliotecas</h2>
+    <ul>
+        {% for biblioteca in bibliotecas %}
+            <li>
+                <a href="{% url 'detalle_biblioteca' biblioteca.id %}">{{ biblioteca.nombre }}</a>
+            </li>
+        {% empty %}
+            <li>No hay bibliotecas registradas.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'nueva_biblioteca' %}">Añadir nueva biblioteca</a>
+{% endblock %}

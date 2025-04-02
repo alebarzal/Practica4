@@ -6,43 +6,27 @@ from .models import Biblioteca, Libro, Usuario, Prestamo
 # Bibliotecas
 
 
-def lista_bibliotecas(request):
-    if request.method == 'GET':
-        bibliotecas = list(Biblioteca.objects.values('id', 'nombre', 'direccion'))
-        return JsonResponse(bibliotecas, safe=False)
-    else:
-        return JsonResponse({"error": "Método no permitido"}, status=405)
-
-@csrf_exempt
-def registrar_biblioteca(request):
+def nueva_biblioteca(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        try:
-            nombre = data['nombre']
-            direccion = data.get('direccion', '')
-        except KeyError:
-            return JsonResponse({'error': 'Datos incompletos'}, status=400)
-        biblioteca = Biblioteca.objects.create(
-            nombre=nombre,
-            direccion=direccion
-        )
-        return JsonResponse({
-            'id': biblioteca.id,
-            'nombre': biblioteca.nombre,
-            'direccion': biblioteca.direccion
-        }, status=201)
+        form = BibliotecaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Biblioteca creada correctamente.")
+            return redirect('lista_bibliotecas')
+        else:
+            messages.error(request, "Error al crear la biblioteca.")
     else:
-        return JsonResponse({'error': 'Método no permitido'}, status=405)
+        form = BibliotecaForm()
+    return render(request, 'biblioteca_form.html', {'form': form, 'titulo': 'Nueva Biblioteca'})
+
+def lista_bibliotecas(request):
+    bibliotecas = Biblioteca.objects.all()
+    return render(request, 'bibliotecas.html', {'bibliotecas': bibliotecas})
 
 def detalle_biblioteca(request, biblioteca_id):
-    if request.method == 'GET':
-        try:
-            biblioteca = Biblioteca.objects.values('id', 'nombre', 'direccion').get(id=biblioteca_id)
-            return JsonResponse(biblioteca)
-        except Biblioteca.DoesNotExist:
-            return JsonResponse({"error": "Biblioteca no encontrada"}, status=404)
-    else:
-        return JsonResponse({"error": "Método no permitido"}, status=405)
+    biblioteca = get_object_or_404(Biblioteca, id=biblioteca_id)
+    libros = Libro.objects.filter(biblioteca=biblioteca)
+    return render(request, 'biblioteca_detalle.html', {'biblioteca': biblioteca, 'libros': libros})
 
 # Libros
 

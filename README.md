@@ -1,4 +1,4 @@
-# Practica4 - API REST
+# Practica4 - API REST (Version Practica 4 [Old])
 
 Este repositorio implementa una API REST para la gestión de una biblioteca, usuarios, libros y préstamos. Los endpoints están organizados bajo el prefijo **practicaCuatro**. A continuación, se detalla la documentación de la API con ejemplos de peticiones y datos de ejemplo.
 

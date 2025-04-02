@@ -1,0 +1,21 @@
+<!-- biblioteca_detalle.html -->
+{% extends "base.html" %}
+
+{% block title %}Detalle de Biblioteca{% endblock %}
+
+{% block content %}
+    <h2>{{ biblioteca.nombre }}</h2>
+    <p>Dirección: {{ biblioteca.direccion }}</p>
+
+    <h3>Libros en esta biblioteca:</h3>
+    <div class="box-container">
+        {% for libro in libros %}
+            <a href="{% url 'detalle_libro' libro.id %}" class="box">
+                <h4>{{ libro.titulo }}</h4>
+                <p>Autor: {{ libro.autor }}</p>
+            </a>
+        {% empty %}
+            <p>No hay libros registrados en esta biblioteca.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

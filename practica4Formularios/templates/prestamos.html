@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Listado de Préstamos{% endblock %}
+
+{% block content %}
+    <h2>Listado de Préstamos</h2>
+    <div class="box-container">
+        {% for prestamo in prestamos %}
+            <a href="{% url 'detalle_prestamo' prestamo.id %}" class="box">
+                <h3>Préstamo #{{ prestamo.id }}</h3>
+                <p>Libro: {{ prestamo.libro.titulo }}</p>
+                <p>Usuario: {{ prestamo.usuario.nombre }}</p>
+            </a>
+        {% empty %}
+            <p>No hay préstamos registrados.</p>
+        {% endfor %}
+    </div>
+    <a href="{% url 'nuevo_prestamo' %}" class="btn-add">Registrar nuevo préstamo</a>
+{% endblock %}

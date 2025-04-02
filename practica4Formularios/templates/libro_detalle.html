@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle de Libro{% endblock %}
+
+{% block content %}
+    <h2>{{ libro.titulo }}</h2>
+    <p>Autor: {{ libro.autor }}</p>
+
+    <!-- Botón para actualizar el libro -->
+    <a href="{% url 'actualizar_libro' libro.id %}" class="btn-action">Actualizar</a>
+
+    <!-- Botón para eliminar el libro (podrías enlazar a una página de confirmación) -->
+    <a href="{% url 'eliminar_libro' libro.id %}" class="btn-delete">Eliminar</a>
+
+    <!-- Botón para cancelar o regresar (opcional) -->
+    <a href="{% url 'lista_libros' %}" class="btn-cancel">Volver al listado</a>
+{% endblock %}

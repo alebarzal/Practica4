@@ -1,0 +1,20 @@
+<!-- usuario_detalle.html -->
+{% extends "base.html" %}
+
+{% block title %}Detalle de Usuario{% endblock %}
+
+{% block content %}
+    <h2>{{ usuario.nombre }}</h2>
+    <p>Email: {{ usuario.email }}</p>
+
+    <h3>Historial de Préstamos</h3>
+    <ul>
+        {% for prestamo in prestamos %}
+            <li>
+                <a href="{% url 'detalle_prestamo' prestamo.id %}">Préstamo #{{ prestamo.id }}</a>
+            </li>
+        {% empty %}
+            <li>No hay préstamos registrados para este usuario.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Listado de Bibliotecas{% endblock %}
+
+{% block content %}
+    <h2>Listado de Bibliotecas</h2>
+    <div class="box-container">
+        {% for biblioteca in bibliotecas %}
+            <a href="{% url 'detalle_biblioteca' biblioteca.id %}" class="box">
+                <h3>{{ biblioteca.nombre }}</h3>
+                <p>{{ biblioteca.direccion }}</p>
+            </a>
+        {% empty %}
+            <p>No hay bibliotecas registradas.</p>
+        {% endfor %}
+    </div>
+    <a href="{% url 'nueva_biblioteca' %}" class="btn-add">Añadir nueva biblioteca</a>
+{% endblock %}

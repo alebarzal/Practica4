@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle de Préstamo{% endblock %}
+
+{% block content %}
+    <h2>Préstamo #{{ prestamo.id }}</h2>
+    <p>Libro: {{ prestamo.libro.titulo }}</p>
+    <p>Usuario: {{ prestamo.usuario.nombre }}</p>
+    <p>Fecha: {{ prestamo.fecha }}</p>
+
+    <!-- Botón para actualizar el préstamo -->
+    <a href="{% url 'actualizar_prestamo' prestamo.id %}" class="btn-action">Actualizar</a>
+
+    <!-- Botón para eliminar el préstamo -->
+    <a href="{% url 'eliminar_prestamo' prestamo.id %}" class="btn-delete">Eliminar</a>
+
+    <a href="{% url 'lista_prestamos' %}" class="btn-cancel">Volver al listado</a>
+{% endblock %}
